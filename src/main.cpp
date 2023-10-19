@@ -1,49 +1,31 @@
-#include <iostream>
-#include "glad/glad.h"
-#include "glfw/glfw3.h"
+#include "Engine.h"
 
-const unsigned int SCREEN_WIDTH = 1024;
-const unsigned int SCREEN_HEIGHT = 1024;
+#if defined(DEBUG) || defined(_DEBUG)
+#include <crtdbg.h>
+#define _CRTDBG_MAP_ALLOC
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
-const unsigned short OPENGL_MAJOR_VERSION = 4;
-const unsigned short OPENGL_MINOR_VERSION = 6;
-bool vSync = true;
+#endif
+
 
 int main()
 {
-	glfwInit();
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_MAJOR_VERSION);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_MINOR_VERSION);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+#if defined(DEBUG) || defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_crtBreakAlloc( number); //number = 메모리 할당 번호
+#endif
 
 
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL Compute Shaders", NULL, NULL);
-	if (!window)
+	try
 	{
-		std::cout << "Failed to create the GLFW window\n";
-		glfwTerminate();
+		Engine WhatSseobLabs;
+		if (!WhatSseobLabs.initialize()) return 0;
+		return WhatSseobLabs.run();
 	}
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(vSync);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	catch (_exception)
 	{
-		std::cout << "Failed to initialize OpenGL context" << std::endl;
-	}
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		std::cout << "failed. program down\n";
+		return 0;
 	}
 
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
-
-	return 0;
 }
