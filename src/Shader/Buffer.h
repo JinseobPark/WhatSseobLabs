@@ -8,6 +8,7 @@ public:
 	~Buffer();
 
 	void initialize();
+	void initializeHeart();
 	
 	unsigned int getVAO() { return VAO; }
 	unsigned int getVertexSize() { return _vertex_size; }

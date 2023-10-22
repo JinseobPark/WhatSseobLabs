@@ -21,7 +21,8 @@ bool System::initialize()
 		_shader_manager = new ShaderManager();
 		_shader_manager->initialize();
 		_buffer = new Buffer();
-		_buffer->initialize();
+		//_buffer->initialize();
+		_buffer->initializeHeart();
 	}
 
 	return result;
@@ -37,18 +38,20 @@ bool System::update()
 
 bool System::draw()
 {
-	float red = glm::abs(glm::cos(_timer->getTotalTime()));
+	float red = glm::abs(glm::cos(1.2f * _timer->getTotalTime()));
 	float green = glm::abs(glm::sin(_timer->getTotalTime()));
-	float blue = glm::abs(glm::sin(glm::cos(_timer->getTotalTime())));
-	glClearColor(red, green, 0.3f, 1.0f);
-	//glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	float blue = glm::abs(glm::sin(_timer->getTotalTime()) *  glm::cos(_timer->getTotalTime()));
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	//glClearColor(red, green, blue, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPointSize(10.0f);
-	_shader_manager->getShader("default").use();
+	glLineWidth(3.0f);
+	//_shader_manager->getShader("default").use();
+	_shader_manager->getShader("heart").use();
+	_shader_manager->getShader("heart").setFloat("time_", red);
 	glBindVertexArray(_buffer->getVAO());
-	glDrawArrays(GL_POINTS, 0, _buffer->getVertexSize());
-
+	glDrawArrays(GL_POINTS, 0, _buffer->getVertexSize()); 
 
 	glfwSwapBuffers(_window);
 	glfwPollEvents();
